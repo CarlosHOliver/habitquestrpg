@@ -105,6 +105,7 @@ export async function getUserProfile() {
           .insert({
             id: user.id,
             username: user.user_metadata?.username || 'Herói',
+            gender: user.user_metadata?.gender || 'masculino',
             xp: 0,
             level: 1
           })

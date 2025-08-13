@@ -55,9 +55,13 @@ export function updateUserProfile(profile) {
   const levelElement = document.getElementById('level')
   const xpElement = document.getElementById('xp')
   const progressBarElement = document.getElementById('progress-bar')
+  const avatarElement = document.getElementById('user-avatar')
 
   if (usernameElement) usernameElement.textContent = profile.username || 'Herói'
   if (levelElement) levelElement.textContent = `Nível ${profile.level}`
+  if (avatarElement) {
+    avatarElement.textContent = profile.gender === 'feminino' ? '👩' : '👨'
+  }
   
   const currentLevelXp = (profile.level - 1) * 100
   const nextLevelXp = profile.level * 100

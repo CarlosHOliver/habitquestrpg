@@ -58,6 +58,14 @@ function populateCurrentData() {
   
   if (currentProfile) {
     document.getElementById('current-username').textContent = currentProfile.username || 'Herói'
+    document.getElementById('current-gender').textContent = 
+      currentProfile.gender === 'feminino' ? '👩 Feminino' : '👨 Masculino'
+    
+    // Selecionar o radio button correto
+    const genderRadio = document.querySelector(`input[name="new-gender"][value="${currentProfile.gender || 'masculino'}"]`)
+    if (genderRadio) {
+      genderRadio.checked = true
+    }
   }
 }
 
@@ -78,6 +86,9 @@ function setupEventListeners() {
 
   // Form alterar nome
   document.getElementById('username-form').addEventListener('submit', handleUsernameChange)
+
+  // Form alterar gênero
+  document.getElementById('gender-form').addEventListener('submit', handleGenderChange)
 
   // Form alterar email
   document.getElementById('email-form').addEventListener('submit', handleEmailChange)
@@ -134,6 +145,51 @@ async function handleUsernameChange(e) {
   } catch (error) {
     console.error('Erro ao alterar nome:', error)
     showNotification('Erro ao alterar nome: ' + error.message, 'error')
+  } finally {
+    showLoading(false)
+  }
+}
+
+// Alterar gênero do usuário
+async function handleGenderChange(e) {
+  e.preventDefault()
+  showLoading(true)
+
+  try {
+    const newGender = document.querySelector('input[name="new-gender"]:checked')?.value
+    
+    if (!newGender) {
+      showNotification('Selecione um gênero', 'error')
+      return
+    }
+
+    if (newGender === currentProfile?.gender) {
+      showNotification('O gênero é o mesmo atual', 'warning')
+      return
+    }
+
+    console.log('Alterando gênero para:', newGender)
+
+    // Atualizar no banco de dados
+    const { data, error } = await updateUserProfile({ gender: newGender })
+
+    if (error) {
+      console.error('Erro ao atualizar gênero:', error)
+      throw error
+    }
+
+    console.log('Gênero atualizado:', data)
+    
+    // Atualizar dados locais
+    currentProfile.gender = newGender
+    populateCurrentData()
+    
+    const genderText = newGender === 'feminino' ? '👩 Feminino' : '👨 Masculino'
+    showNotification(`Gênero alterado para ${genderText}! ⚥`, 'success')
+
+  } catch (error) {
+    console.error('Erro ao alterar gênero:', error)
+    showNotification('Erro ao alterar gênero: ' + error.message, 'error')
   } finally {
     showLoading(false)
   }

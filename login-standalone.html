@@ -95,6 +95,33 @@
         </div>
         
         <div class="nes-field">
+          <label for="reg-gender" class="text-xs">Gênero do Herói:</label>
+          <div class="flex gap-4 mt-2">
+            <label class="flex items-center gap-2 text-xs">
+              <input 
+                type="radio" 
+                name="reg-gender" 
+                value="masculino" 
+                id="reg-gender-m"
+                class="nes-radio" 
+                checked
+              />
+              <span>👨 Masculino</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs">
+              <input 
+                type="radio" 
+                name="reg-gender" 
+                value="feminino" 
+                id="reg-gender-f"
+                class="nes-radio" 
+              />
+              <span>👩 Feminino</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="nes-field">
           <label for="reg-email" class="text-xs">E-mail:</label>
           <input 
             type="email" 
@@ -239,6 +266,7 @@
       const email = document.getElementById('reg-email').value
       const password = document.getElementById('reg-password').value
       const username = document.getElementById('reg-username').value
+      const gender = document.querySelector('input[name="reg-gender"]:checked').value
       
       showLoading(true)
       
@@ -248,7 +276,8 @@
           password,
           options: {
             data: {
-              username: username
+              username: username,
+              gender: gender
             },
             emailRedirectTo: `${window.location.origin}/dashboard`
           }

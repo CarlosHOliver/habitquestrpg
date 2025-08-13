@@ -55,6 +55,39 @@
         </form>
       </section>
 
+      <!-- Alterar Gênero -->
+      <section class="bg-white border-4 border-black p-6 shadow-lg">
+        <h2 class="text-xl mb-6 text-center">⚥ Gênero do Herói</h2>
+        <form id="gender-form" class="space-y-4">
+          <div>
+            <label class="block text-sm mb-2">Gênero atual: <span id="current-gender" class="text-blue-600"></span></label>
+            <div class="flex gap-6 mt-4">
+              <label class="flex items-center gap-2 text-sm">
+                <input 
+                  type="radio" 
+                  name="new-gender" 
+                  value="masculino" 
+                  id="new-gender-m"
+                  class="nes-radio" 
+                />
+                <span>👨 Masculino</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <input 
+                  type="radio" 
+                  name="new-gender" 
+                  value="feminino" 
+                  id="new-gender-f"
+                  class="nes-radio" 
+                />
+                <span>👩 Feminino</span>
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="nes-btn is-primary w-full">Alterar Gênero</button>
+        </form>
+      </section>
+
       <!-- Alterar Email -->
       <section class="bg-white border-4 border-black p-6 shadow-lg">
         <h2 class="text-xl mb-6 text-center">📧 Email</h2>

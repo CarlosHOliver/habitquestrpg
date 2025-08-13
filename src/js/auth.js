@@ -1,13 +1,14 @@
 import { supabase } from './supabaseClient.js'
 
-export async function signUp(email, password, username) {
+export async function signUp(email, password, username, gender = 'masculino') {
   try {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          username: username
+          username: username,
+          gender: gender
         },
         emailRedirectTo: `${window.location.origin}/dashboard`
       }
