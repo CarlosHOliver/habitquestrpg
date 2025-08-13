@@ -6,17 +6,28 @@ let currentUser = null
 
 // Verificar autenticação na inicialização
 async function initializeApp() {
-  const { data: { user } } = await getCurrentUser()
-  
-  if (!user) {
-    window.location.href = '/login.html'
+  // Evitar loop infinito - verificar se já estamos na página de login
+  if (window.location.pathname === '/login.html') {
     return
   }
 
-  currentUser = user
-  await loadUserData()
-  await loadHabits()
-  setupEventListeners()
+  try {
+    const { data: { user }, error } = await getCurrentUser()
+    
+    if (error || !user) {
+      console.log('Usuário não autenticado, redirecionando para login...')
+      window.location.replace('/login.html')
+      return
+    }
+
+    currentUser = user
+    await loadUserData()
+    await loadHabits()
+    setupEventListeners()
+  } catch (error) {
+    console.error('Erro ao inicializar app:', error)
+    window.location.replace('/login.html')
+  }
 }
 
 // Carregar dados do usuário
@@ -82,10 +93,16 @@ function setupEventListeners() {
 
 // Monitorar mudanças de autenticação
 onAuthStateChange((event, session) => {
+  console.log('Auth state changed:', event)
   if (event === 'SIGNED_OUT') {
-    window.location.href = '/login.html'
+    window.location.replace('/login.html')
+  } else if (event === 'SIGNED_IN' && window.location.pathname !== '/index.html') {
+    window.location.replace('/dashboard')
   }
 })
 
 // Inicializar app quando DOM estiver carregado
-document.addEventListener('DOMContentLoaded', initializeApp)
+document.addEventListener('DOMContentLoaded', () => {
+  // Adicionar delay pequeno para evitar problemas de timing
+  setTimeout(initializeApp, 100)
+})

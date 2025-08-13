@@ -143,9 +143,27 @@
     toggleBtn.addEventListener('click', toggleFormMode)
 
     // Verificar se usuário já está logado
+    async function checkIfLoggedIn() {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (user && !error) {
+          console.log('Usuário já logado, redirecionando...')
+          window.location.replace('/dashboard')
+        }
+      } catch (error) {
+        console.log('Usuário não logado, permanecendo na página de login')
+      }
+    }
+
+    // Verificar login na inicialização
+    checkIfLoggedIn()
+
+    // Event listeners
     onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event)
       if (event === 'SIGNED_IN' && session) {
-        window.location.href = '/'
+        console.log('Login realizado, redirecionando para dashboard...')
+        window.location.replace('/dashboard')
       }
     })
 
@@ -165,7 +183,7 @@
         showNotification('Erro no login: ' + error.message, 'error')
       } else {
         showNotification('Login realizado com sucesso!', 'success')
-        window.location.href = '/'
+        // Não redirecionar aqui, deixar o onAuthStateChange fazer isso
       }
     }
 

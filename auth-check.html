@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HabitQuest RPG - Carregando...</title>
+  <style>
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+      text-align: center;
+    }
+    .loading {
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div>
+    <h1>HabitQuest RPG</h1>
+    <p class="loading">Carregando...</p>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/js/supabaseClient.js'
+
+    async function checkAuth() {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        
+        if (error || !user) {
+          console.log('Redirecionando para login...')
+          window.location.replace('/login.html')
+        } else {
+          console.log('Usuário logado, redirecionando para dashboard...')
+          window.location.replace('/index.html')
+        }
+      } catch (error) {
+        console.error('Erro ao verificar autenticação:', error)
+        window.location.replace('/login.html')
+      }
+    }
+
+    // Verificar autenticação após pequeno delay
+    setTimeout(checkAuth, 500)
+  </script>
+</body>
+</html>
