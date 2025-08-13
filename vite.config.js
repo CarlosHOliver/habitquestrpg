@@ -8,7 +8,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         login: resolve(__dirname, 'login.html'),
         loginStandalone: resolve(__dirname, 'login-standalone.html'),
-        authCheck: resolve(__dirname, 'auth-check.html')
+        authCheck: resolve(__dirname, 'auth-check.html'),
+        settings: resolve(__dirname, 'settings.html')
       }
     }
   },

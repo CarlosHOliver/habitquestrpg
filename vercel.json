@@ -13,6 +13,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/settings",
+      "destination": "/settings.html"
+    },
+    {
       "source": "/src/(.*)",
       "destination": "/src/$1"
     }

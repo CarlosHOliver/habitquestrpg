@@ -91,6 +91,13 @@ function setupEventListeners() {
     })
   }
 
+  const settingsBtn = document.getElementById('settings-btn')
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      window.location.href = '/settings'
+    })
+  }
+
   const newHabitBtn = document.getElementById('new-habit-btn')
   if (newHabitBtn) {
     newHabitBtn.addEventListener('click', () => {

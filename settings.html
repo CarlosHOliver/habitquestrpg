@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações - HabitQuest RPG</title>
+  
+  <!-- Google Fonts - Press Start 2P -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- NES.css -->
+  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body class="min-h-screen bg-gradient-to-b from-blue-400 to-purple-600 font-press-start">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    
+    <!-- Header -->
+    <header class="bg-white border-4 border-black p-6 mb-8 shadow-lg">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl mb-2">⚙️ Configurações</h1>
+          <p class="text-sm text-gray-600">Gerencie sua conta e dados pessoais</p>
+        </div>
+        <div class="flex gap-4">
+          <button id="back-btn" class="nes-btn text-xs">← Voltar</button>
+          <button id="logout-btn" class="nes-btn is-error text-xs">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Seções de Configurações -->
+    <div class="space-y-8">
+      
+      <!-- Alterar Nome do Herói -->
+      <section class="bg-white border-4 border-black p-6 shadow-lg">
+        <h2 class="text-xl mb-6 text-center">👤 Dados do Herói</h2>
+        <form id="username-form" class="space-y-4">
+          <div>
+            <label class="block text-sm mb-2">Nome atual: <span id="current-username" class="text-blue-600"></span></label>
+            <input 
+              type="text" 
+              id="new-username" 
+              class="nes-input w-full" 
+              placeholder="Novo nome do herói"
+              required
+              maxlength="20"
+            >
+          </div>
+          <button type="submit" class="nes-btn is-primary w-full">Alterar Nome</button>
+        </form>
+      </section>
+
+      <!-- Alterar Email -->
+      <section class="bg-white border-4 border-black p-6 shadow-lg">
+        <h2 class="text-xl mb-6 text-center">📧 Email</h2>
+        <form id="email-form" class="space-y-4">
+          <div>
+            <label class="block text-sm mb-2">Email atual: <span id="current-email" class="text-blue-600"></span></label>
+            <input 
+              type="email" 
+              id="new-email" 
+              class="nes-input w-full" 
+              placeholder="Novo email"
+              required
+            >
+          </div>
+          <button type="submit" class="nes-btn is-primary w-full">Alterar Email</button>
+        </form>
+      </section>
+
+      <!-- Alterar Senha -->
+      <section class="bg-white border-4 border-black p-6 shadow-lg">
+        <h2 class="text-xl mb-6 text-center">🔒 Senha</h2>
+        <form id="password-form" class="space-y-4">
+          <div>
+            <label class="block text-sm mb-2">Senha atual</label>
+            <input 
+              type="password" 
+              id="current-password" 
+              class="nes-input w-full" 
+              placeholder="Digite sua senha atual"
+              required
+            >
+          </div>
+          <div>
+            <label class="block text-sm mb-2">Nova senha</label>
+            <input 
+              type="password" 
+              id="new-password" 
+              class="nes-input w-full" 
+              placeholder="Nova senha (min. 6 caracteres)"
+              required
+              minlength="6"
+            >
+          </div>
+          <div>
+            <label class="block text-sm mb-2">Confirmar nova senha</label>
+            <input 
+              type="password" 
+              id="confirm-password" 
+              class="nes-input w-full" 
+              placeholder="Confirme a nova senha"
+              required
+              minlength="6"
+            >
+          </div>
+          <button type="submit" class="nes-btn is-primary w-full">Alterar Senha</button>
+        </form>
+      </section>
+
+      <!-- Zona de Perigo - Excluir Conta -->
+      <section class="bg-red-50 border-4 border-red-500 p-6 shadow-lg">
+        <h2 class="text-xl mb-6 text-center text-red-700">⚠️ Zona de Perigo</h2>
+        <div class="space-y-4">
+          <div class="nes-container is-rounded with-title">
+            <p class="title text-red-700">Excluir Conta</p>
+            <p class="text-sm mb-4 text-red-600">
+              ⚠️ Esta ação é <strong>IRREVERSÍVEL</strong>! 
+              Todos os seus dados, hábitos e progresso serão perdidos permanentemente.
+            </p>
+            <button id="delete-account-btn" class="nes-btn is-error w-full">
+              🗑️ Excluir Minha Conta
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+      <div class="bg-white border-4 border-black p-8 max-w-md mx-4 shadow-2xl">
+        <h3 class="text-lg mb-4 text-center text-red-700">⚠️ Confirmar Exclusão</h3>
+        <div class="mb-6">
+          <p class="text-sm mb-4 text-center">
+            Tem certeza que deseja excluir sua conta?
+          </p>
+          <p class="text-xs text-red-600 text-center mb-4">
+            Digite "<strong>EXCLUIR</strong>" para confirmar:
+          </p>
+          <input 
+            type="text" 
+            id="delete-confirmation" 
+            class="nes-input w-full text-center" 
+            placeholder="Digite EXCLUIR"
+          >
+        </div>
+        <div class="flex gap-4">
+          <button id="cancel-delete-btn" class="nes-btn flex-1">Cancelar</button>
+          <button id="confirm-delete-btn" class="nes-btn is-error flex-1" disabled>Excluir</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white border-4 border-black p-8 text-center">
+      <p class="mb-4">⏳ Processando...</p>
+      <div class="nes-spinner"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="/src/js/settings.js"></script>
+</body>
+</html>
