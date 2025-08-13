@@ -7,11 +7,13 @@ let currentUser = null
 // Verificar autenticação na inicialização
 async function initializeApp() {
   // Evitar loop infinito - verificar se já estamos na página de login
-  if (window.location.pathname === '/login.html') {
+  const currentPath = window.location.pathname
+  if (currentPath === '/login.html' || currentPath.includes('login')) {
     return
   }
 
   try {
+    console.log('Verificando autenticação...')
     const { data: { user }, error } = await getCurrentUser()
     
     if (error || !user) {
@@ -20,6 +22,7 @@ async function initializeApp() {
       return
     }
 
+    console.log('Usuário autenticado:', user.email)
     currentUser = user
     await loadUserData()
     await loadHabits()
@@ -102,7 +105,7 @@ onAuthStateChange((event, session) => {
   console.log('Auth state changed:', event)
   if (event === 'SIGNED_OUT') {
     window.location.replace('/login.html')
-  } else if (event === 'SIGNED_IN' && window.location.pathname !== '/index.html') {
+  } else if (event === 'SIGNED_IN' && window.location.pathname.includes('login')) {
     window.location.replace('/dashboard')
   }
 })
