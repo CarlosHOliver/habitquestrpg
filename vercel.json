@@ -6,11 +6,15 @@
     },
     {
       "source": "/login",
-      "destination": "/login.html"
+      "destination": "/login-standalone.html"
     },
     {
       "source": "/dashboard",
       "destination": "/index.html"
+    },
+    {
+      "source": "/src/(.*)",
+      "destination": "/src/$1"
     }
   ],
   "headers": [
@@ -23,5 +27,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "src/js/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }

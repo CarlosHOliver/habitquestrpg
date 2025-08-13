@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HabitQuest RPG - Login</title>
+  
+  <!-- Google Fonts - Press Start 2P -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- NES.css -->
+  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'press-start': ['"Press Start 2P"', 'cursive'],
+          },
+        },
+      },
+    }
+  </script>
+  
+  <style>
+    * {
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-purple-600 to-pink-600 font-press-start flex items-center justify-center">
+  
+  <div class="w-full max-w-md mx-4">
+    <!-- Logo/Title -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl text-white mb-4">HabitQuest</h1>
+      <h2 class="text-2xl text-yellow-300 mb-2">RPG</h2>
+      <p class="text-sm text-gray-200">Transforme seus hábitos em aventura!</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="bg-white border-4 border-black p-6 shadow-lg mb-4">
+      <h3 class="text-lg mb-6 text-center">Entrar</h3>
+      
+      <form id="login-form" class="space-y-4">
+        <div class="nes-field">
+          <label for="email" class="text-xs">E-mail:</label>
+          <input 
+            type="email" 
+            id="email" 
+            class="nes-input text-xs" 
+            required 
+            placeholder="seu@email.com"
+          />
+        </div>
+        
+        <div class="nes-field">
+          <label for="password" class="text-xs">Senha:</label>
+          <input 
+            type="password" 
+            id="password" 
+            class="nes-input text-xs" 
+            required 
+            placeholder="Sua senha"
+          />
+        </div>
+        
+        <button type="submit" class="nes-btn is-primary w-full text-xs">
+          Entrar
+        </button>
+      </form>
+    </div>
+
+    <!-- Register Form -->
+    <div class="bg-white border-4 border-black p-6 shadow-lg mb-4" id="register-form" style="display: none;">
+      <h3 class="text-lg mb-6 text-center">Criar Conta</h3>
+      
+      <form id="signup-form" class="space-y-4">
+        <div class="nes-field">
+          <label for="reg-username" class="text-xs">Nome do Herói:</label>
+          <input 
+            type="text" 
+            id="reg-username" 
+            class="nes-input text-xs" 
+            required 
+            placeholder="Seu nome de herói"
+          />
+        </div>
+        
+        <div class="nes-field">
+          <label for="reg-email" class="text-xs">E-mail:</label>
+          <input 
+            type="email" 
+            id="reg-email" 
+            class="nes-input text-xs" 
+            required 
+            placeholder="seu@email.com"
+          />
+        </div>
+        
+        <div class="nes-field">
+          <label for="reg-password" class="text-xs">Senha:</label>
+          <input 
+            type="password" 
+            id="reg-password" 
+            class="nes-input text-xs" 
+            required 
+            placeholder="Sua senha"
+            minlength="6"
+          />
+        </div>
+        
+        <button type="submit" class="nes-btn is-success w-full text-xs">
+          Criar Conta
+        </button>
+      </form>
+    </div>
+
+    <!-- Toggle between login and register -->
+    <div class="text-center">
+      <button id="toggle-form" class="nes-btn text-xs">
+        Não tem conta? Criar uma
+      </button>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="text-center mt-4" style="display: none;">
+      <p class="text-white text-xs">Carregando...</p>
+    </div>
+
+    <!-- Messages -->
+    <div id="message" class="mt-4 text-center" style="display: none;">
+      <div class="nes-balloon from-left">
+        <p class="text-xs" id="message-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://pyytmavaurldksqirgme.supabase.co'
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5eXRtYXZhdXJsZGtzcWlyZ21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwOTM4MDksImV4cCI6MjA3MDY2OTgwOX0._7A2C1xpWXcWnqaRM2R89_YL-sSVAuxaVK1mPNNAdSc'
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    
+    let isLoginMode = true
+
+    // Elementos do DOM
+    const loginForm = document.getElementById('login-form')
+    const signupForm = document.getElementById('signup-form')
+    const registerFormDiv = document.getElementById('register-form')
+    const toggleBtn = document.getElementById('toggle-form')
+    const loading = document.getElementById('loading')
+
+    // Funções auxiliares
+    function showNotification(message, type = 'success') {
+      const messageDiv = document.getElementById('message')
+      const messageText = document.getElementById('message-text')
+      
+      messageText.textContent = message
+      messageDiv.style.display = 'block'
+      
+      setTimeout(() => {
+        messageDiv.style.display = 'none'
+      }, 5000)
+    }
+
+    function showLoading(show) {
+      loading.style.display = show ? 'block' : 'none'
+    }
+
+    // Event listeners
+    loginForm.addEventListener('submit', handleLogin)
+    signupForm.addEventListener('submit', handleSignup)
+    toggleBtn.addEventListener('click', toggleFormMode)
+
+    // Verificar se usuário já está logado
+    async function checkIfLoggedIn() {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (user && !error) {
+          console.log('Usuário já logado, redirecionando...')
+          window.location.replace('/index.html')
+        }
+      } catch (error) {
+        console.log('Usuário não logado, permanecendo na página de login')
+      }
+    }
+
+    // Verificar login na inicialização
+    checkIfLoggedIn()
+
+    // Monitorar mudanças de autenticação
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event)
+      if (event === 'SIGNED_IN' && session) {
+        console.log('Login realizado, redirecionando...')
+        window.location.replace('/index.html')
+      }
+    })
+
+    async function handleLogin(e) {
+      e.preventDefault()
+      
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
+      
+      showLoading(true)
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        
+        if (error) throw error
+        
+        showNotification('Login realizado com sucesso!', 'success')
+        // O redirecionamento será feito pelo onAuthStateChange
+      } catch (error) {
+        console.error('Erro no login:', error)
+        showNotification('Erro no login: ' + error.message, 'error')
+      } finally {
+        showLoading(false)
+      }
+    }
+
+    async function handleSignup(e) {
+      e.preventDefault()
+      
+      const email = document.getElementById('reg-email').value
+      const password = document.getElementById('reg-password').value
+      const username = document.getElementById('reg-username').value
+      
+      showLoading(true)
+      
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username: username
+            }
+          }
+        })
+        
+        if (error) throw error
+        
+        showNotification('Conta criada com sucesso! Verifique seu email.', 'success')
+        toggleFormMode()
+      } catch (error) {
+        console.error('Erro no cadastro:', error)
+        showNotification('Erro no cadastro: ' + error.message, 'error')
+      } finally {
+        showLoading(false)
+      }
+    }
+
+    function toggleFormMode() {
+      isLoginMode = !isLoginMode
+      
+      if (isLoginMode) {
+        registerFormDiv.style.display = 'none'
+        loginForm.parentElement.style.display = 'block'
+        toggleBtn.textContent = 'Não tem conta? Criar uma'
+      } else {
+        registerFormDiv.style.display = 'block'
+        loginForm.parentElement.style.display = 'none'
+        toggleBtn.textContent = 'Já tem conta? Entrar'
+      }
+    }
+  </script>
+</body>
+</html>

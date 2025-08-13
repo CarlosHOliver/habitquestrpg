@@ -34,28 +34,40 @@
     <p class="loading">Carregando...</p>
   </div>
 
-  <script type="module">
-    import { supabase } from '/src/js/supabaseClient.js'
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // Configuração do Supabase usando CDN
+    const SUPABASE_URL = 'https://pyytmavaurldksqirgme.supabase.co'
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5eXRtYXZhdXJsZGtzcWlyZ21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwOTM4MDksImV4cCI6MjA3MDY2OTgwOX0._7A2C1xpWXcWnqaRM2R89_YL-sSVAuxaVK1mPNNAdSc'
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
     async function checkAuth() {
       try {
+        console.log('Verificando autenticação...')
         const { data: { user }, error } = await supabase.auth.getUser()
         
-        if (error || !user) {
-          console.log('Redirecionando para login...')
-          window.location.replace('/login.html')
+        if (error) {
+          console.error('Erro ao verificar auth:', error)
+          window.location.replace('/login-standalone.html')
+          return
+        }
+        
+        if (!user) {
+          console.log('Usuário não logado, redirecionando para login...')
+          window.location.replace('/login-standalone.html')
         } else {
-          console.log('Usuário logado, redirecionando para dashboard...')
+          console.log('Usuário logado:', user.email)
           window.location.replace('/index.html')
         }
       } catch (error) {
         console.error('Erro ao verificar autenticação:', error)
-        window.location.replace('/login.html')
+        window.location.replace('/login-standalone.html')
       }
     }
 
     // Verificar autenticação após pequeno delay
-    setTimeout(checkAuth, 500)
+    setTimeout(checkAuth, 1000)
   </script>
 </body>
 </html>
