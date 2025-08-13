@@ -8,7 +8,8 @@ export async function signUp(email, password, username) {
       options: {
         data: {
           username: username
-        }
+        },
+        emailRedirectTo: `${window.location.origin}/dashboard`
       }
     })
     
