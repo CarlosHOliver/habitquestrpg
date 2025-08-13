@@ -85,3 +85,72 @@ export function showXpGainAnimation(xpGained) {
     animation.remove()
   }, 2000)
 }
+
+// =============================================
+// SISTEMA DE MISSÕES DIÁRIAS
+// =============================================
+
+export function renderDailyMissions(missions) {
+  const missionsContainer = document.getElementById('missions-list')
+  if (!missionsContainer) {
+    console.warn('Container de missões diárias não encontrado')
+    return
+  }
+
+  missionsContainer.innerHTML = ''
+
+  if (!missions || missions.length === 0) {
+    missionsContainer.innerHTML = `
+      <div class="text-xs text-center text-gray-500">
+        <p>Nenhuma missão disponível hoje</p>
+      </div>
+    `
+    return
+  }
+
+  missions.forEach(mission => {
+    const missionElement = document.createElement('div')
+    missionElement.className = 'text-xs'
+    
+    const isCompleted = mission.is_completed
+    const progressPercent = Math.min(mission.progress_percentage || 0, 100)
+    const statusClass = isCompleted ? 'bg-green-400' : 'bg-blue-400'
+    
+    missionElement.innerHTML = `
+      <div class="flex items-center mb-1">
+        <span class="mr-2">${mission.icon}</span>
+        <p class="text-gray-800 ${isCompleted ? 'line-through text-gray-500' : ''}">${mission.name}</p>
+        ${isCompleted ? '<span class="ml-2 text-green-600">✓</span>' : ''}
+      </div>
+      <div class="w-full bg-gray-300 border border-black h-3 mt-1">
+        <div class="${statusClass} h-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+      </div>
+      <p class="text-gray-600 mt-1">
+        ${mission.current_progress}/${mission.requirement_value} - 
+        ${isCompleted ? 'Completada!' : `Recompensa: ${mission.xp_reward} XP`}
+      </p>
+    `
+    
+    if (isCompleted) {
+      missionElement.classList.add('opacity-75')
+    }
+    
+    missionsContainer.appendChild(missionElement)
+  })
+}
+
+export function showMissionCompleteAnimation(missionName, xpReward) {
+  const animation = document.createElement('div')
+  animation.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-press-start text-lg text-green-400 z-50 text-center bg-black bg-opacity-75 p-4 rounded'
+  animation.innerHTML = `
+    <div class="text-yellow-400 mb-2">🏆 MISSÃO COMPLETADA! 🏆</div>
+    <div class="text-white mb-1">${missionName}</div>
+    <div class="text-green-400">+${xpReward} XP!</div>
+  `
+  
+  document.body.appendChild(animation)
+  
+  setTimeout(() => {
+    animation.remove()
+  }, 3000)
+}

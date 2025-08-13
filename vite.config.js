@@ -9,7 +9,8 @@ export default defineConfig({
         login: resolve(__dirname, 'login.html'),
         loginStandalone: resolve(__dirname, 'login-standalone.html'),
         authCheck: resolve(__dirname, 'auth-check.html'),
-        settings: resolve(__dirname, 'settings.html')
+        settings: resolve(__dirname, 'settings.html'),
+        achievements: resolve(__dirname, 'achievements.html')
       }
     }
   },

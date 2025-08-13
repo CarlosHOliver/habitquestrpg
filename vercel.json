@@ -17,6 +17,10 @@
       "destination": "/settings.html"
     },
     {
+      "source": "/achievements",
+      "destination": "/achievements.html"
+    },
+    {
       "source": "/src/(.*)",
       "destination": "/src/$1"
     }

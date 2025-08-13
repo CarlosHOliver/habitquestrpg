@@ -17,3 +17,28 @@
 .progress-bar {
   transition: width 0.5s ease-in-out;
 }
+
+/* Estilos para conquistas */
+.achievement-card {
+  transition: transform 0.2s ease;
+}
+
+.achievement-card:hover {
+  transform: scale(1.02);
+}
+
+.filter-btn.active {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+/* Animação para conquistas desbloqueadas */
+@keyframes achievement-unlock {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.achievement-unlocked {
+  animation: achievement-unlock 0.6s ease-out;
+}

@@ -1,6 +1,6 @@
 import { onAuthStateChange, getCurrentUser, signOut } from './auth.js'
-import { getHabits, completeHabit, getUserProfile } from './api.js'
-import { renderHabits, updateUserProfile, showNotification, showXpGainAnimation } from './ui.js'
+import { getHabits, completeHabit, getUserProfile, getDailyMissions } from './api.js'
+import { renderHabits, updateUserProfile, showNotification, showXpGainAnimation, renderDailyMissions, showMissionCompleteAnimation } from './ui.js'
 
 let currentUser = null
 
@@ -26,6 +26,7 @@ async function initializeApp() {
     currentUser = user
     await loadUserData()
     await loadHabits()
+    await loadDailyMissions()
     setupEventListeners()
   } catch (error) {
     console.error('Erro ao inicializar app:', error)
@@ -63,6 +64,21 @@ async function loadHabits() {
   renderHabits(habits)
 }
 
+// Carregar missões diárias
+async function loadDailyMissions() {
+  console.log('Carregando missões diárias...')
+  const { data: missions, error } = await getDailyMissions()
+  
+  if (error) {
+    console.error('Erro ao carregar missões diárias:', error)
+    showNotification('Erro ao carregar missões diárias: ' + error.message, 'error')
+    return
+  }
+
+  console.log('Missões diárias carregadas:', missions)
+  renderDailyMissions(missions)
+}
+
 // Completar hábito
 window.completeHabit = async (habitId, xpValue) => {
   const { data, error } = await completeHabit(habitId, xpValue)
@@ -75,8 +91,9 @@ window.completeHabit = async (habitId, xpValue) => {
   showXpGainAnimation(xpValue)
   showNotification(`Hábito completado! +${xpValue} XP`, 'success')
   
-  // Recarregar dados do usuário
+  // Recarregar dados do usuário e missões
   await loadUserData()
+  await loadDailyMissions()
 }
 
 // Configurar event listeners
@@ -95,6 +112,13 @@ function setupEventListeners() {
   if (settingsBtn) {
     settingsBtn.addEventListener('click', () => {
       window.location.href = '/settings'
+    })
+  }
+
+  const achievementsBtn = document.getElementById('achievements-btn')
+  if (achievementsBtn) {
+    achievementsBtn.addEventListener('click', () => {
+      window.location.href = '/achievements'
     })
   }
 
