@@ -13,17 +13,6 @@
   image-rendering: pixelated;
 }
 
-/* Animações customizadas */
-@keyframes xp-gain {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
-  100% { transform: translateY(-40px) scale(1); opacity: 0; }
-}
-
-.xp-animation {
-  animation: xp-gain 2s ease-out forwards;
-}
-
 /* Estilos para barra de progresso */
 .progress-bar {
   transition: width 0.5s ease-in-out;
