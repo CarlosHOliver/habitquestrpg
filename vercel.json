@@ -27,10 +27,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "src/js/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }
