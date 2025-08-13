@@ -46,7 +46,22 @@ CREATE POLICY "Users can insert own profile"
   ON profiles FOR INSERT 
   WITH CHECK (auth.uid() = id);
 
--- 6. Criar políticas de segurança para habits
+-- 6. Criar função para criar perfil automaticamente após cadastro
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, username, xp, level)
+  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data->>'username', 'Herói'), 0, 1);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 7. Criar trigger para executar a função após novo usuário
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 8. Criar políticas de segurança para habits
 CREATE POLICY "Users can view own habits" 
   ON habits FOR SELECT 
   USING (auth.uid() = user_id);
@@ -63,7 +78,7 @@ CREATE POLICY "Users can delete own habits"
   ON habits FOR DELETE 
   USING (auth.uid() = user_id);
 
--- 7. Criar políticas de segurança para habit_logs
+-- 9. Criar políticas de segurança para habit_logs
 CREATE POLICY "Users can view own habit logs" 
   ON habit_logs FOR SELECT 
   USING (auth.uid() = user_id);
@@ -76,7 +91,7 @@ CREATE POLICY "Users can delete own habit logs"
   ON habit_logs FOR DELETE 
   USING (auth.uid() = user_id);
 
--- 8. Criar função para atualizar timestamp automaticamente
+-- 10. Criar função para atualizar timestamp automaticamente
 CREATE OR REPLACE FUNCTION handle_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -85,13 +100,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 9. Criar índices para melhor performance
+-- 11. Criar índices para melhor performance
 CREATE INDEX idx_habits_user_id ON habits(user_id);
 CREATE INDEX idx_habit_logs_user_id ON habit_logs(user_id);
 CREATE INDEX idx_habit_logs_habit_id ON habit_logs(habit_id);
 CREATE INDEX idx_habit_logs_created_at ON habit_logs(created_at);
 
--- 10. (Opcional) Inserir dados de exemplo
+-- 12. (Opcional) Inserir dados de exemplo
 -- Descomente as linhas abaixo se quiser dados de teste
 /*
 INSERT INTO profiles (id, username, xp, level)

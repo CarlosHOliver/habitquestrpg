@@ -96,9 +96,30 @@ export async function getUserProfile() {
       .eq('id', user.id)
       .single()
 
-    if (error) throw error
+    if (error) {
+      // Se o perfil não existe, tentar criar um
+      if (error.code === 'PGRST116') {
+        console.log('Perfil não encontrado, criando...')
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            username: user.user_metadata?.username || 'Herói',
+            xp: 0,
+            level: 1
+          })
+          .select()
+          .single()
+
+        if (createError) throw createError
+        return { data: newProfile, error: null }
+      }
+      throw error
+    }
+
     return { data, error: null }
   } catch (error) {
+    console.error('Erro ao buscar perfil:', error)
     return { data: null, error }
   }
 }

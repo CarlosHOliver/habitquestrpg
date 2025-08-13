@@ -5,23 +5,14 @@ export async function signUp(email, password, username) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          username: username
+        }
+      }
     })
     
     if (error) throw error
-    
-    // Criar perfil do usuário
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          username,
-          xp: 0,
-          level: 1
-        })
-      
-      if (profileError) throw profileError
-    }
     
     return { data, error: null }
   } catch (error) {

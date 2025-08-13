@@ -32,25 +32,31 @@ async function initializeApp() {
 
 // Carregar dados do usuário
 async function loadUserData() {
+  console.log('Carregando dados do usuário...')
   const { data: profile, error } = await getUserProfile()
   
   if (error) {
-    showNotification('Erro ao carregar perfil do usuário', 'error')
+    console.error('Erro ao carregar perfil:', error)
+    showNotification('Erro ao carregar perfil do usuário: ' + error.message, 'error')
     return
   }
 
+  console.log('Perfil carregado:', profile)
   updateUserProfile(profile)
 }
 
 // Carregar hábitos
 async function loadHabits() {
+  console.log('Carregando hábitos...')
   const { data: habits, error } = await getHabits()
   
   if (error) {
-    showNotification('Erro ao carregar hábitos', 'error')
+    console.error('Erro ao carregar hábitos:', error)
+    showNotification('Erro ao carregar hábitos: ' + error.message, 'error')
     return
   }
 
+  console.log('Hábitos carregados:', habits)
   renderHabits(habits)
 }
 
